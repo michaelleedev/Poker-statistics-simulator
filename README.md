@@ -21,5 +21,4 @@ Referenced https://www.youtube.com/channel/UCCjnRY0aATv0jm0res8zuUQ for deck bui
 
 Reference https://en.wikipedia.org/wiki/Poker_probability 
 
-originally written and uploaded Septemper 2022: https://github.com/micheal1029/PRE
-migrated and edited on July 2023
+originally written and uploaded Septemper 2022: https://github.com/micheal1029/PRE and migrated and edited on July 2023
