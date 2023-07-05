@@ -20,3 +20,6 @@ I am planning on exporting each trial results to a csv file as a deviation to th
 Referenced https://www.youtube.com/channel/UCCjnRY0aATv0jm0res8zuUQ for deck building
 
 Reference https://en.wikipedia.org/wiki/Poker_probability 
+
+originally written and uploaded Septemper 2022: https://github.com/micheal1029/PRE
+migrated and edited on July 2023
