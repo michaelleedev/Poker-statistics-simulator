@@ -1,12 +1,24 @@
 import csv
 import Deck
+import pandas as pd
 from os.path import exists
 from datetime import datetime
+reference = {'royal flush': 0.00000154, 
+             'straight flush': .0000139, 
+             'four of a kind': .0002401, 
+             'full house': .001441, 
+             'flush': .003925, 
+             'straight': .003925, 
+             'three of a kind': .021128, 
+             'two pairs': .047539, 
+             'pair': .422569, 
+             'high card': .501177
+             }
 
-# function that handles the trial of the experiment. 
-# takes in user inputed number of draws for each trial
+# Averages each trials and calculates the percent difference from the theroretical values
 # returns dictionary with hands as keys and percentage as values
-def trial(draws):
+def run(draws):
+    print("Running...")
     results = {}
     for x in range(draws):
         d = Deck.Deck()
@@ -16,43 +28,9 @@ def trial(draws):
             results[hand] += 1
         else:
             results[hand] = 1
+    print("Done!")
+    return results
 
-    ratio = {}
-    for x in results:
-        ratio[x] = results[x]/draws
-    return ratio
-
-# Averages each trials and calculates the percent difference from the theroretical values
-# returns dictionary with hands as keys and percentage as values
-def run(trials, draws):
-    total = {'royal flush': 0, 'straight flush': 0, 'four of a kind': 0, 'full house': 0, 'flush': 0, 
-        'straight': 0, 'three of a kind': 0, 'two pairs': 0, 'pair': 0, 'high card': 0}
-
-    n = 1
-    for x in range(trials):
-        print("Runinng trial: " + str(n) + "...")
-        t = trial(draws)
-        for x in t:
-            total[x] += t[x]
-        n += 1
-        print("done!")
-
-    average = {} #decimals
-    for x in total:
-        average[x] = total[x]/trials
-
-    diff = {}
-    reference = {'royal flush': 0.00000154, 'straight flush': .0000139, 'four of a kind': .0002401, 'full house': .001441, 'flush': .003925, 
-        'straight': .003925, 'three of a kind': .021128, 'two pairs': .047539, 'pair': .422569, 'high card': .501177}
-    for x in reference:
-        diff[x] = average[x] - reference[x]
-
-    print("Total average percentage:")
-    print_percentage(average)
-    print("Average percentage difference: ")
-    data = print_percentage(diff)
-
-    return diff
                     
 def print_percentage(ratio):
     l = ['royal flush', 'straight flush', 'four of a kind', 'full house', 'flush', 'straight', 'three of a kind', 'two pairs', 'pair', 'high card']
@@ -79,25 +57,34 @@ def print_percentage(ratio):
 #         f.close()
 
 def main():
-    
-    draws = input("Number of draws per trial (press 'enter' for default value of 1,000,000): ")
-    if draws == "":
-        draws = 1000000
-    else:
-        draws = int(draws)
+    name = input("Enter your name: ")
+    print("press 'q' to exit and save data\n*Warning! pressing Ctrl+C will not save data*\n")
 
-    trials = input("Number of trials (press 'enter' for default value of 3): ")
-    if trials == "":
-        trials = 3
-    else:
-        trials = int(trials)
+    data = []
 
-    print(str(draws) + " draws per trial for " + str(trials) + " trials.")
+    while True: 
+        draws = input("Enter the number of draws in millions in range of 1 - 10: ")
+        if draws == "":
+            draws = 1
+        elif draws == "q" or draws == chr(27):
+            break
+        elif int(draws) > 10:
+            while(int(draws) > 10):
+                draws = input("Number of draws too high, enter in range of 1 - 10: ")
+        
+        draws = int(draws) * 1000000
 
-    start = datetime.now()
-    data = run(trials, draws)
+        start = datetime.now()
+        temp = run(draws)
+        print("Total Runtime: " + str(datetime.now()-start))
 
-    print("Total Runtime: " + str(datetime.now()-start))
+        temp['draws'] = draws
+        data.append(temp)
+
+
+    df = pd.DataFrame.from_dict(data)
+
+    print(df)
 
 if __name__ == "__main__":
     main()
