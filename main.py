@@ -58,21 +58,32 @@ def print_percentage(ratio):
 
 def main():
     name = input("Enter your name: ")
+    while name == "":
+        name = input("Name cannot be empty. Enter your name: ")
     print("press 'q' to exit and save data\n*Warning! pressing Ctrl+C will not save data*\n")
 
     data = []
-
     while True: 
-        draws = input("Enter the number of draws in millions in range of 1 - 10: ")
-        if draws == "":
-            draws = 1
-        elif draws == "q" or draws == chr(27):
+        draws = input("Enter the number of draws in range of 1 - 10 (millions): ")
+
+        if(draws == "q"):
             break
-        elif int(draws) > 10:
-            while(int(draws) > 10):
-                draws = input("Number of draws too high, enter in range of 1 - 10: ")
         
-        draws = int(draws) * 1000000
+        try: 
+            int(draws)
+            isInt = True
+        except ValueError:
+            isInt = False
+
+        while (not isInt) or int(draws) < 1 or int(draws) > 10:
+            draws = input("Invalid number of draws, enter in range of 1 - 10 (millions): ")
+            try: 
+                int(draws)
+                isInt = True
+            except ValueError:
+                isInt = False
+        
+        draws =  int(draws) * 100
 
         start = datetime.now()
         temp = run(draws)
@@ -83,7 +94,7 @@ def main():
 
 
     df = pd.DataFrame.from_dict(data)
-
+    df.to_csv('./data/'+name+'.csv', mode='a', index=False, header=False)
     print(df)
 
 if __name__ == "__main__":
