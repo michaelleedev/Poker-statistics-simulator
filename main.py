@@ -1,6 +1,7 @@
 import csv
 import Deck
 import pandas as pd
+import os.path
 from os.path import exists
 from datetime import datetime
 reference = {'royal flush': 0.00000154, 
@@ -18,8 +19,18 @@ reference = {'royal flush': 0.00000154,
 # Averages each trials and calculates the percent difference from the theroretical values
 # returns dictionary with hands as keys and percentage as values
 def run(draws):
+    results = {'royal flush': 0, 
+             'straight flush': 0, 
+             'four of a kind': 0, 
+             'full house': 0, 
+             'flush': 0, 
+             'straight': 0, 
+             'three of a kind': 0, 
+             'two pairs': 0, 
+             'pair': 0, 
+             'high card': 0
+             }
     print("Running...")
-    results = {}
     for x in range(draws):
         d = Deck.Deck()
         d.shuffle()
@@ -41,21 +52,6 @@ def print_percentage(ratio):
     print()
     return s
 
-
-# saves the run's average percent difference data into data as a csv
-# ordered: date and start time, runtime, number of trials, number of draws per trial, royal flush, straight flush, four of a kind, full house, flush, straight, three of a kind, two pairs, pair, high card
-# WIP
-# def parse(start, runtime, percentDiff):
-
-#     with open('data.txt', 'a') as f:
-#         writer = csv.writer(f)
-
-#         f.write(start + ",")
-#         f.write()
-#         f.write(percentDiff)
-#         f.write("\n")
-#         f.close()
-
 def main():
     name = input("Enter your name: ")
     while name == "":
@@ -66,9 +62,9 @@ def main():
     while True: 
         draws = input("Enter the number of draws in range of 1 - 10 (millions): ")
 
-        if(draws == "q"):
+        if draws == "q":
             break
-        
+          
         try: 
             int(draws)
             isInt = True
@@ -83,7 +79,7 @@ def main():
             except ValueError:
                 isInt = False
         
-        draws =  int(draws) * 100
+        draws =  int(draws) * 1000000
 
         start = datetime.now()
         temp = run(draws)
@@ -94,8 +90,10 @@ def main():
 
 
     df = pd.DataFrame.from_dict(data)
-    df.to_csv('./data/'+name+'.csv', mode='a', index=False, header=False)
     print(df)
+    df.to_csv('./data/'+name+'.csv', mode='a', index=False, header=False)
+
+    
 
 if __name__ == "__main__":
     main()
